@@ -21,10 +21,10 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
       - run: npm install
       # Publish to npm
-      - name: Publish to npmjs
-        run: npm publish --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      # - name: Publish to npmjs
+      #   run: npm publish --access public
+      #   env:
+      #     NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       # Setup .npmrc file to publish to GitHub Packages
       - uses: actions/setup-node@v2
         with:
@@ -35,7 +35,7 @@ jobs:
       - name: Publish to GitHub
         run: |
           cat package.json
-          cat package.json | jq '.name = "@yuvalb/" + .name' > package.json
+          cat package.json | jq '.name = "@yuvalb/" + .name'
           cat package.json
           # npm publish
         env:
