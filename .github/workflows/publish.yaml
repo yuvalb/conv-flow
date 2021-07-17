@@ -35,7 +35,7 @@ jobs:
       - name: Publish to GitHub
         run: |
           cat package.json
-          cat package.json | jq '.name = "@yuvalb/" + .name' > package.json
+          cat package.json | jq '.name = "@yuvalb/" + .name' | tee package.json
           cat package.json
           # npm publish
         env:
