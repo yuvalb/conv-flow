@@ -33,8 +33,7 @@ jobs:
       - name: Publish to GitHub
         run: |
           cat package.json | jq --arg scope "$SCOPE" '.name = $scope + "/" + .name' | tee package.json
-          cat package.json
-          # npm publish
+          npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SCOPE: "@yuvalb"
