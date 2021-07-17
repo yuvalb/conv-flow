@@ -19,5 +19,13 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-      - run: npm version --git-tag-version false patch
-      - run: npm version --preid beta prerelease
+      - run: npm ci
+      - run: npm test
+      - run: |
+          PACKAGE_VERSION=$(npm version --git-tag-version false patch)
+          git checkout -b $PACKAGE_VERSION
+          git add package.json
+          git commit -m "update package.json to $PACKAGE_VERSION"
+          npm version --preid beta prerelease
+          git checkout main
+          git merge --squash $PACKAGE_VERSION
