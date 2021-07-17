@@ -2,9 +2,9 @@ name: Publisg npm package
 on:
   push:
     branches:
-      - "*"
-    # tags:
-    #   - "v*"
+      - "main"
+    tags:
+      - "v*"
 
 jobs:
   publish:
