@@ -25,6 +25,7 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "1394077+yuvalb@users.noreply.github.com"
+<<<<<<< Updated upstream
           git pull
       - run: |
           PACKAGE_VERSION=$(npm version --git-tag-version false patch)
@@ -36,3 +37,6 @@ jobs:
           git checkout main
           git merge --squash $PACKAGE_VERSION
           git push
+=======
+      - run: npm version patch
+>>>>>>> Stashed changes
