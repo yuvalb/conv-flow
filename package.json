@@ -5,7 +5,8 @@
   "main": "./dist/lib/index.js",
   "scripts": {
     "test": "mocha --require ts-node/register --parallel './**/*.spec.ts'",
-    "build": "tsc"
+    "build": "tsc",
+    "postversion": "git push --follow-tags"
   },
   "repository": {
     "type": "git",
