@@ -28,6 +28,7 @@ jobs:
       - run: |
           PACKAGE_VERSION=$(npm version --git-tag-version false patch)
           git checkout -b $PACKAGE_VERSION
+          git status
           git add package.json
           git commit -m "update package.json to $PACKAGE_VERSION"
           npm version --preid beta prerelease
