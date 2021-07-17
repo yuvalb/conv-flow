@@ -20,7 +20,7 @@ jobs:
           node-version: '16.x'
           registry-url: 'https://registry.npmjs.org'
       - run: npm install
-      # Publish to npmjs.org
+      # Publish to npm
       - name: Publish to npmjs
         run: npm publish --access public
         env:
@@ -29,11 +29,12 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           registry-url: 'https://npm.pkg.github.com'
+          # Defaults to the user or organization that owns the workflow file
+          # scope: '@yuvalb'
       # Publish to GitHub Packages
       - name: Publish to GitHub
         run: |
-          cat package.json | jq --arg scope "$SCOPE" '.name = $scope + "/" + .name' | tee package.json
+          jq '.name = "@yuvalb/" + .name' package.json | tee package.json
           npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SCOPE: "@yuvalb"
