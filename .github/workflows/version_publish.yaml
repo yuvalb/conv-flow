@@ -1,4 +1,4 @@
-name: Update version
+name: Bump version and publish
 
 on:
   push:
@@ -26,3 +26,18 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
       - run: npm version patch -m "Updating version to v%s"
+      - name: Publish to npmjs
+        run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      # Setup .npmrc file to publish to GitHub Packages
+      - uses: actions/setup-node@v2
+        with:
+          registry-url: 'https://npm.pkg.github.com'
+      - name: Publish to GitHub
+        run: |
+          cat package.json | jq --arg scope "$SCOPE" '.name = $scope + "/" + .name' | tee package.json > /dev/null
+          npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SCOPE: "@yuvalb"
