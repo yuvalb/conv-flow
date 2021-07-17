@@ -34,8 +34,9 @@ jobs:
       # Publish to GitHub Packages
       - name: Publish to GitHub
         run: |
+          cat package.json
           cat package.json | jq '.name = "@yuvalb/" + .name' > package.json
           cat package.json
-          npm publish
+          # npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
