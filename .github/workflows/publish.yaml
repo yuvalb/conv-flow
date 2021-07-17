@@ -32,7 +32,7 @@ jobs:
       # Publish to GitHub Packages
       - name: Publish to GitHub
         run: |
-          cat package.json | jq --arg scope "$SCOPE" '.name = $scope + "/" + .name' | tee package.json > /dev/null
+          cat package.json | jq --arg scope "$SCOPE" '.name = $scope + "/" + .name' | tee package.json >> /dev/null
           npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
