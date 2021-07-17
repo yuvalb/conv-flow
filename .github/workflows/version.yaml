@@ -25,7 +25,7 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "1394077+yuvalb@users.noreply.github.com"
-          git pull origin main
+          git status
       - run: |
           PACKAGE_VERSION=$(npm version --git-tag-version false patch)
           git checkout -b $PACKAGE_VERSION
