@@ -1,6 +1,6 @@
 {
   "name": "conv-flow",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "A library for managing procedural, asynchronous, convergable and type-safe flows.",
   "main": "./dist/lib/index.js",
   "scripts": {

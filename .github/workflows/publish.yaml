@@ -33,6 +33,6 @@ jobs:
           # scope: '@yuvalb'
       # Publish to GitHub Packages
       - name: Publish to GitHub
-        run: npm publish
+        run: npm publish --registry https://npm.pkg.github.com
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
