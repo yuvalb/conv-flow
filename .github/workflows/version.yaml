@@ -21,6 +21,10 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - run: npm ci
       - run: npm test
+      - name: "Set git config"
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "1394077+yuvalb@users.noreply.github.com"
       - run: |
           PACKAGE_VERSION=$(npm version --git-tag-version false patch)
           git checkout -b $PACKAGE_VERSION
