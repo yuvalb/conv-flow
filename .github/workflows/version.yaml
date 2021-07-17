@@ -27,4 +27,4 @@ jobs:
           git config --global user.email "1394077+yuvalb@users.noreply.github.com"
       - run: npm version patch
       - name: Push tagged commit
-        run: git push
+        run: git push --follow-tags
