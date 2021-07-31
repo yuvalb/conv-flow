@@ -12,7 +12,9 @@ export const liftEither = <E = never, A = never>(
 
 export const normalizeResult = <T, E>(r: Layerable<T, E>): Layer<T, E> => {
   if (Array.isArray(r)) {
-    return (r as (Either<E, T> | T)[]).map((k: Either<E, T> | T) => liftEither(k));
+    return (r as (Either<E, T> | T)[]).map((k: Either<E, T> | T) =>
+      liftEither(k)
+    );
   } else {
     return [liftEither(r)];
   }

@@ -17,15 +17,15 @@ describe("flow", () => {
 
   it("should lift a unit result to array", async () => {
     const results = await Flow.lift<void, number>(() => num).exec();
-    assert.equal(Array.isArray(results), true);
-    assert.equal(isEither(results[0]), true);
+    assert.strictEqual(Array.isArray(results), true);
+    assert.strictEqual(isEither(results[0]), true);
   });
 
   it("should lift a function", async () => {
     const results = await Flow.lift<void, number>(() => num).exec();
-    assert.equal(results.length, 1);
-    assert.equal(isRight(results[0]), true);
-    assert.equal((<Right<number>>results[0]).right, num);
+    assert.strictEqual(results.length, 1);
+    assert.strictEqual(isRight(results[0]), true);
+    assert.strictEqual((<Right<number>>results[0]).right, num);
   });
 
   it("should lift an array of functions", async () => {
@@ -38,10 +38,12 @@ describe("flow", () => {
     const [rights] = partitionArray(results, isRight);
     const rightValues = _.map(rights, (_) => _.right);
 
-    assert.equal(results.length, functions.length);
-    assert.equal(results.length, rightValues.length);
+    assert.strictEqual(results.length, functions.length);
+    assert.strictEqual(results.length, rightValues.length);
 
-    functions.forEach((f) => assert.equal(_.includes(rightValues, f(num)), true));
+    functions.forEach((f) =>
+      assert.strictEqual(_.includes(rightValues, f(num)), true)
+    );
   });
 
   it("should terminate on left output", async () => {
@@ -50,9 +52,9 @@ describe("flow", () => {
       () => left(termination),
       (e: Error) => ({ err: e.message })
     ).exec();
-    assert.equal(results.length, 1);
-    assert.equal(isLeft(results[0]), true);
-    assert.equal((<Left<{ err: string }>>results[0]).left, termination);
+    assert.strictEqual(results.length, 1);
+    assert.strictEqual(isLeft(results[0]), true);
+    assert.strictEqual((<Left<{ err: string }>>results[0]).left, termination);
   });
 
   describe("errors", () => {
@@ -60,18 +62,21 @@ describe("flow", () => {
       const results = await Flow.lift((_: void) => {
         throw err;
       }, ferr).exec();
-      assert.equal(results.length, 1);
-      assert.equal(isLeft(results[0]), true);
-      assert.deepEqual((<Left<{ err: typeof err }>>results[0]).left, ferr(err));
+      assert.strictEqual(results.length, 1);
+      assert.strictEqual(isLeft(results[0]), true);
+      assert.deepStrictEqual(
+        (<Left<{ err: typeof err }>>results[0]).left,
+        ferr(err)
+      );
     });
 
     it("should return a Left error on erroneous function with no specified error mapper", async () => {
       const results = await Flow.lift((_: void) => {
         throw err;
       }).exec();
-      assert.equal(results.length, 1);
-      assert.equal(isLeft(results[0]), true);
-      assert.equal((<Left<Error>>results[0]).left, err);
+      assert.strictEqual(results.length, 1);
+      assert.strictEqual(isLeft(results[0]), true);
+      assert.strictEqual((<Left<Error>>results[0]).left, err);
     });
 
     it("should return partial results on partially failing lifted flows", async () => {
@@ -86,11 +91,11 @@ describe("flow", () => {
       const leftValues = _.map(lefts, (_) => _.left);
       const rightValues = _.map(rights, (_) => _.right);
 
-      assert.equal(results.length, 2);
-      assert.equal(leftValues.length, 1);
-      assert.equal(_.includes(leftValues, err), true);
-      assert.equal(rightValues.length, 1);
-      assert.equal(_.includes(rightValues, num), true);
+      assert.strictEqual(results.length, 2);
+      assert.strictEqual(leftValues.length, 1);
+      assert.strictEqual(_.includes(leftValues, err), true);
+      assert.strictEqual(rightValues.length, 1);
+      assert.strictEqual(_.includes(rightValues, num), true);
     });
 
     it("should return the mapped termination on multiple flows", async () => {
@@ -102,8 +107,8 @@ describe("flow", () => {
       const [lefts] = partitionArray(results, isLeft);
       const leftValues = _.map(lefts, (_) => _.left);
 
-      assert.equal(results.length, 2);
-      assert.equal(leftValues.length, results.length);
+      assert.strictEqual(results.length, 2);
+      assert.strictEqual(leftValues.length, results.length);
       leftValues.forEach((leftValue) => assert.deepEqual(leftValue, ferr(err)));
     });
   });
@@ -111,19 +116,21 @@ describe("flow", () => {
   describe("chain, then", () => {
     it("should split the results", async () => {
       const results = await flow.exec();
-      assert.equal(results.length, arr.length);
-      assert.equal(results.filter(isRight).length, arr.length);
-      assert.equal(
-        results.filter((r, idx) => (<Right<number>>r).right === arr[idx]).length,
+      assert.strictEqual(results.length, arr.length);
+      assert.strictEqual(results.filter(isRight).length, arr.length);
+      assert.strictEqual(
+        results.filter((r, idx) => (<Right<number>>r).right === arr[idx])
+          .length,
         arr.length
       );
     });
 
     it("should apply the function on every result", async () => {
       const results = await flow.then((x) => x + 1).exec();
-      assert.equal(results.length, arr.length);
-      assert.equal(
-        results.filter((r, idx) => (<Right<number>>r).right === arr[idx] + 1).length,
+      assert.strictEqual(results.length, arr.length);
+      assert.strictEqual(
+        results.filter((r, idx) => (<Right<number>>r).right === arr[idx] + 1)
+          .length,
         arr.length
       );
     });
@@ -132,9 +139,12 @@ describe("flow", () => {
       const results = await Flow.lift((_: void) => 5, ferr)
         .then(errFlow)
         .exec();
-      assert.equal(results.length, 1);
-      assert.equal(isLeft(results[0]), true);
-      assert.deepEqual((<Left<ReturnType<typeof ferr>>>results[0]).left, ferr(err));
+      assert.strictEqual(results.length, 1);
+      assert.strictEqual(isLeft(results[0]), true);
+      assert.deepEqual(
+        (<Left<ReturnType<typeof ferr>>>results[0]).left,
+        ferr(err)
+      );
     });
 
     it("should run multiple flows", async () => {
@@ -144,16 +154,16 @@ describe("flow", () => {
       const results = await flow.then(f1, f2).exec();
       const [rights] = partitionArray(results, isRight);
 
-      assert.equal(results.length, rights.length);
-      assert.equal(rights.length, 2 * arr.length);
+      assert.strictEqual(results.length, rights.length);
+      assert.strictEqual(rights.length, 2 * arr.length);
 
       const rightValues = _.map(rights, (r) => r.right);
 
       const firstMatches = _.intersection(arr.map(f1), rightValues);
       const secondMatches = _.intersection(arr.map(f2), rightValues);
 
-      assert.equal(firstMatches.length, arr.length);
-      assert.equal(secondMatches.length, arr.length);
+      assert.strictEqual(firstMatches.length, arr.length);
+      assert.strictEqual(secondMatches.length, arr.length);
     });
 
     describe("errors", () => {
@@ -166,9 +176,9 @@ describe("flow", () => {
 
       it("should pass error on erroneous sync flow", async () => {
         const results = await flow.then(errSyncFlow).exec();
-        assert.equal(results.length, arr.length);
-        assert.equal(results.filter(isLeft).length, arr.length);
-        assert.equal(
+        assert.strictEqual(results.length, arr.length);
+        assert.strictEqual(results.filter(isLeft).length, arr.length);
+        assert.strictEqual(
           results.filter((r) => (<Left<Error>>r).left === err).length,
           arr.length
         );
@@ -176,9 +186,9 @@ describe("flow", () => {
 
       it("should pass error on erroneous async flow", async () => {
         const results = await flow.then(errAsyncFlow).exec();
-        assert.equal(results.length, arr.length);
-        assert.equal(results.filter(isLeft).length, arr.length);
-        assert.equal(
+        assert.strictEqual(results.length, arr.length);
+        assert.strictEqual(results.filter(isLeft).length, arr.length);
+        assert.strictEqual(
           results.filter((r) => (<Left<Error>>r).left === err).length,
           arr.length
         );
@@ -193,9 +203,9 @@ describe("flow", () => {
         const results = await flow.then(f1, f2).exec();
         const [lefts, rights] = partitionArray(results, isLeft);
 
-        assert.equal(results.length, rights.length + lefts.length);
-        assert.equal(rights.length, arr.length);
-        assert.equal(lefts.length, arr.length);
+        assert.strictEqual(results.length, rights.length + lefts.length);
+        assert.strictEqual(rights.length, arr.length);
+        assert.strictEqual(lefts.length, arr.length);
 
         const rightValues = _.map(rights, (r) => r.right);
         const leftValues = _.map(lefts, (l) => l.left);
@@ -203,8 +213,8 @@ describe("flow", () => {
         const firstMatches = _.intersection(arr.map(f1), rightValues);
         const secondMatches = _.filter(leftValues, (lv) => lv === err);
 
-        assert.equal(firstMatches.length, arr.length);
-        assert.equal(secondMatches.length, arr.length);
+        assert.strictEqual(firstMatches.length, arr.length);
+        assert.strictEqual(secondMatches.length, arr.length);
       });
     });
   });
@@ -212,17 +222,18 @@ describe("flow", () => {
   describe("converge, to", () => {
     it("should converge multiple results to a single result", async () => {
       const results = await flow.to((nums) => num).exec();
-      assert.equal(results.length, 1);
-      assert.equal(isRight(results[0]), true);
-      assert.equal((<Right<number>>results[0]).right, num);
+      assert.strictEqual(results.length, 1);
+      assert.strictEqual(isRight(results[0]), true);
+      assert.strictEqual((<Right<number>>results[0]).right, num);
     });
 
     it("should converge multiple results to multiple results", async () => {
       const results = await flow.to((nums) => arr).exec();
-      assert.equal(results.length, arr.length);
-      assert.equal(results.filter(isRight).length, arr.length);
-      assert.equal(
-        results.filter((r, idx) => (<Right<number>>r).right === arr[idx]).length,
+      assert.strictEqual(results.length, arr.length);
+      assert.strictEqual(results.filter(isRight).length, arr.length);
+      assert.strictEqual(
+        results.filter((r, idx) => (<Right<number>>r).right === arr[idx])
+          .length,
         arr.length
       );
     });
@@ -235,22 +246,22 @@ describe("flow", () => {
       const [rights] = partitionArray(results, isRight);
       const rightValues = _.map(rights, (_) => _.right);
 
-      assert.equal(results.length, 2 * arr.length);
-      assert.equal(_.filter(results, isRight).length, results.length);
+      assert.strictEqual(results.length, 2 * arr.length);
+      assert.strictEqual(_.filter(results, isRight).length, results.length);
 
       const f1Results = _.intersection(rightValues, f1(arr));
       const f2Results = _.intersection(rightValues, f2(arr));
 
-      assert.equal(f1Results.length, arr.length);
-      assert.equal(f2Results.length, arr.length);
+      assert.strictEqual(f1Results.length, arr.length);
+      assert.strictEqual(f2Results.length, arr.length);
     });
 
     describe("errors", () => {
       it("should converge to a single error on erroneous flow", async () => {
         const results = await flow.to(errFlow).exec();
-        assert.equal(results.length, 1);
-        assert.equal(isLeft(results[0]), true);
-        assert.equal((<Left<Error>>results[0]).left, err);
+        assert.strictEqual(results.length, 1);
+        assert.strictEqual(isLeft(results[0]), true);
+        assert.strictEqual((<Left<Error>>results[0]).left, err);
       });
 
       it("should converge to partial erroneous results on partially halting flows", async () => {
@@ -261,10 +272,10 @@ describe("flow", () => {
         const leftValues = _.map(lefts, (_) => _.left);
         const rightValues = _.map(rights, (_) => _.right);
 
-        assert.equal(results.length, arr.length + 1);
-        assert.equal(lefts.length, 1);
-        assert.equal(rights.length, arr.length);
-        assert.equal(_.first(leftValues), err);
+        assert.strictEqual(results.length, arr.length + 1);
+        assert.strictEqual(lefts.length, 1);
+        assert.strictEqual(rights.length, arr.length);
+        assert.strictEqual(_.first(leftValues), err);
       });
     });
   });
@@ -272,19 +283,19 @@ describe("flow", () => {
   describe("exec", () => {
     it("should pass the initial value along", async () => {
       const results = await Flow.lift((_: void) => num).exec();
-      assert.equal(results.length, 1);
-      assert.equal(isRight(results[0]), true);
+      assert.strictEqual(results.length, 1);
+      assert.strictEqual(isRight(results[0]), true);
       if (isRight(results[0])) {
-        assert.equal(results[0].right, num);
+        assert.strictEqual(results[0].right, num);
       }
     });
 
     describe("errors", () => {
       it("should return Left with error on erroneous flow", async () => {
         const results = await flow.then(errFlow).exec();
-        assert.equal(results.length, arr.length);
-        assert.equal(isLeft(results[0]), true);
-        assert.equal(
+        assert.strictEqual(results.length, arr.length);
+        assert.strictEqual(isLeft(results[0]), true);
+        assert.strictEqual(
           results.filter((r) => (<Left<Error>>r).left === err).length,
           arr.length
         );
