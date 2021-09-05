@@ -28,7 +28,7 @@ A `flow`'s `layer` can be **_converged_** into a new `layer` with a flow whose i
 Below is a diagram to try to simplify this concept:
 \
 \
-![Flow](./assets/diagram_v1.png)
+![Flow](../assets/diagram_v1.png)
 
 ## Termination
 
@@ -40,7 +40,11 @@ To change the termination type, you must pass the `Flow.lift` function a 2nd arg
 
 ## Concatenation ( + )
 
+> Coming soon
+
 ## Convergence ( x )
+
+> Coming soon
 
 ## Layerable
 
