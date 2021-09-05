@@ -76,3 +76,6 @@ typings/
 .fusebox/
 
 dist
+
+# Examples are drafts for now
+examples

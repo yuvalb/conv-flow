@@ -4,6 +4,9 @@
   "description": "A library for managing procedural, asynchronous, convergable and type-safe flows.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "files": [
+    "/dist"
+  ],
   "scripts": {
     "test": "mocha --require ts-node/register --parallel './**/*.spec.ts'",
     "build": "tsc",
@@ -31,7 +34,6 @@
   "devDependencies": {
     "@types/lodash": "^4.14.171",
     "@types/mocha": "^8.2.3",
-    "mocha": "^9.0.2",
     "prettier": "^2.3.2",
     "ts-node": "^10.1.0",
     "typescript": "^4.3.5"

@@ -41,6 +41,3 @@ export const partitionArray = <T, A extends T>(
     },
     [[] as A[], [] as Exclude<T, A>[]]
   );
-
-export const flatten = <T>(arr: T[][]): T[] =>
-  arr.reduce((acc, a) => acc.concat(a), []);
